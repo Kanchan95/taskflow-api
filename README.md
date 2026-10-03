@@ -1,7 +1,7 @@
-# TaskFlow API — Production-Grade Python REST API
+# TaskFlow API
 
-A complete, production-ready task management REST API demonstrating the
-patterns and practices expected in professional Python backend engineering.
+An async task management REST API built with FastAPI, SQLAlchemy (asyncpg),
+PostgreSQL, Redis and Celery.
 
 ---
 
@@ -45,7 +45,7 @@ HTTP Request
 
 ---
 
-## Key Production Patterns Demonstrated
+## Key Patterns Used
 
 ### 1. Async all the way down
 Every DB call is `await`-ed. The web server (uvicorn) runs an event loop that
@@ -131,7 +131,7 @@ taskflow-api/
 │   ├── conftest.py          # Fixtures, test DB, auth client
 │   ├── test_auth.py
 │   └── test_tasks.py
-├── Dockerfile               # Multi-stage production build
+├── Dockerfile               # Multi-stage Docker build
 ├── docker-compose.yml       # Local dev: API + Worker + PG + Redis
 ├── Makefile                 # Common commands
 ├── pyproject.toml           # Dependencies + tooling config
@@ -179,15 +179,3 @@ make new-migration name="add_due_date_to_tasks"
 | GET | `/health` | Liveness check |
 | GET | `/ready` | Readiness check (DB + Redis) |
 
----
-
-## Interview Talking Points
-
-- "I used async SQLAlchemy with asyncpg because async I/O lets one uvicorn
-  process handle thousands of concurrent DB queries without thread blocking."
-- "Rate limiting is backed by Redis, not in-memory, so it works correctly
-  when multiple API pods are running behind a load balancer."
-- "The dependency injection pattern in FastAPI lets me swap the real database
-  for an in-memory SQLite in tests — zero test infrastructure needed."
-- "The multi-stage Docker build keeps the runtime image ~150MB smaller than
-  a single-stage build by excluding pip and build tools."
